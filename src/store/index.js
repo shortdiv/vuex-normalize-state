@@ -8,12 +8,14 @@ import mutations from "./mutations";
 
 import VuexORM from "@vuex-orm/core";
 import Machine from "@/models/Machine";
+import Location from "@/models/Location";
 
 Vue.use(Vuex);
 
 const database = new VuexORM.Database();
 
 database.register(Machine);
+database.register(Location);
 
 const store = new Vuex.Store({
   plugins: [VuexORM.install(database)],

@@ -12,7 +12,7 @@
         >Last stocked: {{ machine.lastStocked }}</span
       >
       <a href="#" class="location-tag" @click.prevent="goToLocation">
-        {{ machine.location }}
+        {{ locationName }}
       </a>
     </div>
     <span class="machine-state">{{ machine.condition }}</span>
@@ -23,6 +23,8 @@
 </template>
 
 <script>
+import { getLocationNameById } from "@/helpers/locationQueries";
+
 export default {
   name: "VendingMachineItem",
   props: {
@@ -30,8 +32,12 @@ export default {
   },
   data() {
     return {
-      machineId: null
+      machineId: null,
+      locationName: null
     };
+  },
+  mounted() {
+    this.locationName = getLocationNameById(this.machine.location_id);
   },
   methods: {
     restockMachine() {
@@ -40,12 +46,7 @@ export default {
       this.$router.push(`/inventory/?machine=${query}`);
     },
     goToLocation() {
-      this.$store.dispatch("selectLocation", {
-        location: this.machine.location,
-        latlng: this.machine.latlng
-      });
-      const query = this.machine.location.toLowerCase().replace(" ", "-");
-      this.$router.push(`/location/?neighborhood=${query}`);
+      this.$router.push(`/location/?neighborhood=${this.machine.location_id}`);
     }
   }
 };

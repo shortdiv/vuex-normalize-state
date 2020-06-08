@@ -16,11 +16,11 @@
       <div class="machine-information">
         <div class="machine-id">
           <h3>Location</h3>
-          <p>{{ selectedNeighborhood }}</p>
+          <p>{{ selectedNeighborhood.name }}</p>
         </div>
         <div class="machine-state">
           <h3>Machines Available</h3>
-          <p>{{ allMachines.length }}</p>
+          <p>{{ machines }}</p>
         </div>
       </div>
       <button class="service-btn" @click="lockdown">
@@ -34,6 +34,9 @@
 import mapboxgl from "mapbox-gl";
 import geojson from "../../public/chicagoNeighborhoods.json";
 
+import { getNoMachinesByLocationId } from "@/helpers/machineQueries";
+import { getLocationById } from "@/helpers/locationQueries";
+
 export default {
   name: "LocationView",
   props: {
@@ -42,53 +45,17 @@ export default {
   data() {
     return {
       map: null,
+      machines: 0,
       neighborhoods: geojson,
-      selectedNeighborhood: null
+      selectedNeighborhood: { name: "" }
     };
   },
   mounted() {
-    const neighborhood = this.neighborhood
-      .split("-")
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-
-    this.selectedNeighborhood = neighborhood;
-    this.$store.dispatch("selectLocation", neighborhood);
-
-    mapboxgl.accessToken =
-      "pk.eyJ1Ijoic2hvcnRkaXYiLCJhIjoiY2l3OGc5YmE5MDJzZjJ5bWhkdDZieGdzcSJ9.1z-swTWtcCHYI_RawDJCEw";
-
-    var map = new mapboxgl.Map({
-      container: this.$refs.mapCanvas, // container id
-      style: "mapbox://styles/mapbox/light-v8", // stylesheet location
-      center: [-87.624421, 41.875562],
-      zoom: 9 // starting zoom
-    });
-    map.on("load", () => {
-      map.addSource("chi-neighborhoods", {
-        type: "geojson",
-        data: this.neighborhoods
-      });
-      map.addLayer({
-        id: "chi-neighborhoods",
-        type: "line",
-        source: "chi-neighborhoods",
-        paint: {
-          "line-color": "#877b59",
-          "line-width": 1
-        },
-        filter: ["==", "PRI_NEIGH", this.selectedNeighborhood]
-      });
-      map.flyTo({
-        center: this.allMachines[0].latlng || [-87.624421, 41.875562],
-        zoom: 12
-      });
-    });
+    this.selectedNeighborhood = getLocationById(this.neighborhood);
+    this.machines = getNoMachinesByLocationId(this.neighborhood);
+    this.initializeMap();
   },
   computed: {
-    allMachines() {
-      return this.$store.getters.machinesInLocation;
-    },
     isLocationLockeddown() {
       return this.$store.getters.isLocationLockeddown;
     }
@@ -102,6 +69,37 @@ export default {
     },
     goBack() {
       this.$router.push("/");
+    },
+    initializeMap() {
+      mapboxgl.accessToken =
+        "pk.eyJ1Ijoic2hvcnRkaXYiLCJhIjoiY2l3OGc5YmE5MDJzZjJ5bWhkdDZieGdzcSJ9.1z-swTWtcCHYI_RawDJCEw";
+
+      var map = new mapboxgl.Map({
+        container: this.$refs.mapCanvas, // container id
+        style: "mapbox://styles/mapbox/light-v8", // stylesheet location
+        center: [-87.624421, 41.875562],
+        zoom: 9 // starting zoom
+      });
+      map.on("load", () => {
+        map.addSource("chi-neighborhoods", {
+          type: "geojson",
+          data: this.neighborhoods
+        });
+        map.addLayer({
+          id: "chi-neighborhoods",
+          type: "line",
+          source: "chi-neighborhoods",
+          paint: {
+            "line-color": "#877b59",
+            "line-width": 1
+          },
+          filter: ["==", "PRI_NEIGH", this.selectedNeighborhood.name]
+        });
+        map.flyTo({
+          center: this.selectedNeighborhood.latlng,
+          zoom: 12
+        });
+      });
     }
   }
 };

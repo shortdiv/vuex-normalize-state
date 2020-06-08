@@ -1,4 +1,5 @@
 import Machine from "@/models/Machine";
+import Location from "@/models/Location";
 
 const init = () => {
   // make db calls here //
@@ -8,8 +9,7 @@ const init = () => {
       name: "Leela",
       lastStocked: "Feb 2019",
       condition: "Working",
-      location: "Lake View",
-      latlng: [-87.6554288, 41.94705],
+      location_id: 1,
       inventory: [
         {
           productName: "Yay Chips",
@@ -42,8 +42,7 @@ const init = () => {
       name: "Hermes",
       lastStocked: "Feb 2019",
       condition: "Working",
-      location: "Wicker Park",
-      latlng: [-87.67745208740234, 41.910457611083984],
+      location_id: 2,
       inventory: [
         {
           productName: "Yay Chips",
@@ -76,8 +75,7 @@ const init = () => {
       name: "Bender",
       lastStocked: "Feb 2019",
       condition: "Working",
-      location: "Lake View",
-      latlng: [-87.6554288, 41.94705],
+      location_id: 1,
       inventory: [
         {
           productName: "Yay Chips",
@@ -110,8 +108,7 @@ const init = () => {
       name: "Farnsworth",
       lastStocked: "Feb 2019",
       condition: "Working",
-      location: "Lake View",
-      latlng: [-87.6554288, 41.94705],
+      location_id: 1,
       inventory: [
         {
           productName: "Yay Chips",
@@ -144,8 +141,7 @@ const init = () => {
       name: "Fry",
       lastStocked: "Feb 2019",
       condition: "Working",
-      location: "Wicker Park",
-      latlng: [-87.67745208740234, 41.910457611083984],
+      location_id: 2,
       inventory: [
         {
           productName: "Yay Chips",
@@ -178,8 +174,7 @@ const init = () => {
       name: "Wash Bucket",
       lastStocked: "Jan 2020",
       condition: "Working",
-      location: "Boystown",
-      latlng: [-87.6492669, 41.9438833],
+      location_id: 3,
       inventory: [
         {
           productName: "Yay Chips",
@@ -208,7 +203,28 @@ const init = () => {
       ]
     }
   ];
+  const locations = [
+    {
+      id: 1,
+      name: "Lake View",
+      latlng: [-87.6554288, 41.94705],
+      lockedDown: false
+    },
+    {
+      id: 2,
+      name: "Wicker Park",
+      latlng: [-87.67745208740234, 41.910457611083984],
+      lockedDown: false
+    },
+    {
+      id: 3,
+      name: "Boystown",
+      latlng: [-87.6492669, 41.9438833],
+      lockedDown: false
+    }
+  ];
   Machine.insert({ data: machines });
+  Location.insert({ data: locations });
 };
 
 const selectMachine = ({ commit }, payload) => {
@@ -220,6 +236,8 @@ const selectLocation = ({ commit }, payload) => {
 };
 
 const toggleLockdown = ({ state, commit }, payload) => {
+  // do something here //
+  // place id and lockeddown status //
   let updateMachines = [];
   state.machines.map(machine => {
     const shldLockDown =

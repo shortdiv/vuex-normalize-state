@@ -9,8 +9,7 @@ export default class Machine extends Model {
       name: this.attr(""),
       lastStocked: this.attr(""),
       condition: this.attr(""),
-      location: this.attr(""),
-      latlng: this.attr([]),
+      location_id: this.attr(""),
       inventory: this.attr([])
     };
   }
