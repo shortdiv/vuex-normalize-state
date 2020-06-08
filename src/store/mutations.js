@@ -1,3 +1,6 @@
+// import Machine from "@/models/Machine";
+import Location from "@/models/Location";
+
 const selectLocation = (state, payload) => {
   state.selectedLocation = payload;
 };
@@ -7,10 +10,13 @@ const selectMachine = (state, payload) => {
 };
 
 const lockdown = (state, payload) => {
-  state.machines = payload.machines;
-  payload.isAlreadyLockedDown
-    ? state.lockedDownLocations.splice(payload.lockedDownLocationInd, 1)
-    : state.lockedDownLocations.push(payload.neighborhood);
+  console.log(state);
+  Location.update({
+    where: payload.neighborhood,
+    data: {
+      lockedDown: payload.toLockdown
+    }
+  });
 };
 
 export default {

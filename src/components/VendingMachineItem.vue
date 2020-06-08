@@ -3,7 +3,7 @@
     <div
       :class="[
         'machine-condition--tab',
-        machine.condition.replace(' ', '-').toLowerCase()
+        status.replace(' ', '-').toLowerCase()
       ]"
     ></div>
     <div class="machine-card--info">
@@ -15,7 +15,7 @@
         {{ locationName }}
       </a>
     </div>
-    <span class="machine-state">{{ machine.condition }}</span>
+    <span class="machine-state">{{ status }}</span>
     <button class="service-btn" @click.prevent="restockMachine">
       >
     </button>
@@ -23,7 +23,10 @@
 </template>
 
 <script>
-import { getLocationNameById } from "@/helpers/locationQueries";
+import {
+  getLocationNameById,
+  getLocationStatus
+} from "@/helpers/locationQueries";
 
 export default {
   name: "VendingMachineItem",
@@ -38,6 +41,14 @@ export default {
   },
   mounted() {
     this.locationName = getLocationNameById(this.machine.location_id);
+  },
+  computed: {
+    locationStatus() {
+      return getLocationStatus(this.machine.location_id);
+    },
+    status() {
+      return this.locationStatus ? "Locked Down" : this.machine.condition;
+    }
   },
   methods: {
     restockMachine() {

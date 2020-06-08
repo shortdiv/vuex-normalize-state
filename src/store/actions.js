@@ -236,13 +236,7 @@ const selectLocation = ({ commit }, payload) => {
 };
 
 const toggleLockdown = ({ commit }, payload) => {
-  Location.update({
-    where: payload.neighborhood,
-    data: {
-      lockedDown: payload.toLockdown
-    }
-  });
-  commit("");
+  commit("lockdown", payload);
 };
 
 export default {

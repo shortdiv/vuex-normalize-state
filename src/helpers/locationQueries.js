@@ -11,4 +11,8 @@ const getLocationNameById = location_id => {
   return getLocationById(location_id).name;
 };
 
-export { getLocationById, getLocationNameById };
+const getLocationStatus = location_id => {
+  return getLocationById(location_id).lockedDown;
+};
+
+export { getLocationById, getLocationStatus, getLocationNameById };
