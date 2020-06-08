@@ -1,8 +1,14 @@
+import Machine from "@/models/Machine";
+
 const getInventory = state => {
   const machine = state.machines.filter(
     machine => machine.name === state.selectedMachine
   )[0];
   return machine ? machine.inventory : [];
+};
+
+const getMachines = () => {
+  return Machine.all();
 };
 
 const machinesInLocation = state => {
@@ -27,6 +33,7 @@ const isLocationLockeddown = state => {
 
 export default {
   getInventory,
+  getMachines,
   machinesInLocation,
   lastStockedAt,
   isLocationLockeddown
