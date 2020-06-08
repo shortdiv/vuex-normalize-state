@@ -235,25 +235,14 @@ const selectLocation = ({ commit }, payload) => {
   commit("selectLocation", payload);
 };
 
-const toggleLockdown = ({ state, commit }, payload) => {
-  // do something here //
-  // place id and lockeddown status //
-  let updateMachines = [];
-  state.machines.map(machine => {
-    const shldLockDown =
-      machine.location === payload.neighborhood && payload.toLockdown;
-    updateMachines.push({
-      ...machine,
-      condition: shldLockDown ? "Locked Down" : "Working"
-    });
+const toggleLockdown = ({ commit }, payload) => {
+  Location.update({
+    where: payload.neighborhood,
+    data: {
+      lockedDown: payload.toLockdown
+    }
   });
-  const isAlreadyLockedDown =
-    state.lockedDownLocations.indexOf(payload.neighborhood) > -1;
-  commit("lockdown", {
-    machines: updateMachines,
-    isAlreadyLockedDown,
-    neighborhood: payload.neighborhood
-  });
+  commit("");
 };
 
 export default {

@@ -24,7 +24,7 @@
         </div>
       </div>
       <button class="service-btn" @click="lockdown">
-        {{ isLocationLockeddown ? "Unlock" : "Lock" }}
+        {{ selectedNeighborhood.lockedDown ? "Unlock" : "Lock" }}
       </button>
     </section>
   </div>
@@ -45,17 +45,19 @@ export default {
   data() {
     return {
       map: null,
-      machines: 0,
-      neighborhoods: geojson,
-      selectedNeighborhood: { name: "" }
+      neighborhoods: geojson
     };
   },
   mounted() {
-    this.selectedNeighborhood = getLocationById(this.neighborhood);
-    this.machines = getNoMachinesByLocationId(this.neighborhood);
     this.initializeMap();
   },
   computed: {
+    selectedNeighborhood() {
+      return getLocationById(this.neighborhood);
+    },
+    machines() {
+      return getNoMachinesByLocationId(this.neighborhood);
+    },
     isLocationLockeddown() {
       return this.$store.getters.isLocationLockeddown;
     }
@@ -63,8 +65,8 @@ export default {
   methods: {
     lockdown() {
       this.$store.dispatch("toggleLockdown", {
-        neighborhood: this.selectedNeighborhood,
-        toLockdown: !this.$store.getters.isLocationLockeddown
+        neighborhood: this.selectedNeighborhood.id,
+        toLockdown: !this.selectedNeighborhood.lockedDown
       });
     },
     goBack() {
