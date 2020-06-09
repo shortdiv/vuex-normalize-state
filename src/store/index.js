@@ -8,9 +8,15 @@ import mutations from "./mutations";
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
   state,
   getters,
   actions,
   mutations
 });
+
+if (store._actions.init) {
+  store.dispatch("init");
+}
+
+export default store;

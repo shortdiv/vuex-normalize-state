@@ -1,3 +1,7 @@
+const init = () => {
+  console.log("initializing code here");
+};
+
 const selectMachine = ({ commit }, payload) => {
   commit("selectMachine", payload);
 };
@@ -26,6 +30,7 @@ const toggleLockdown = ({ state, commit }, payload) => {
 };
 
 export default {
+  init,
   selectLocation,
   selectMachine,
   toggleLockdown
